@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scanner</title>
+    <style>
+        /* Full screen dark background */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        video {
+            max-width: 100vw;
+            max-height: 100vh;
+            display: block;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+    <video id="scannerVideo" autoplay loop muted>
+        <source src="scanner.webm" type="video/webm" />
+        Your browser does not support the video tag.
+    </video>
+
+    <script>
+        // Unmute after user interaction (required by browsers)
+        const video = document.getElementById('scannerVideo');
+
+        // Try to unmute on any click/tap
+        document.addEventListener('click', () => {
+            if (video.muted) {
+                video.muted = false;
+                video.play();
+            }
+        });
+
+        // Also try on touch
+        document.addEventListener('touchstart', () => {
+            if (video.muted) {
+                video.muted = false;
+                video.play();
+            }
+        });
+
+        // Auto-play with sound if browser allows
+        video.muted = false;
+        video.play().catch(() => {
+            // If autoplay with sound fails, keep muted until user interacts
+            video.muted = true;
+            video.play();
+        });
+    </script>
+
+</body>
+</html>
