@@ -327,7 +327,7 @@
 
         .center-gap {
             flex: 1;
-            min-height: 20px;
+            min-height: 10px;
         }
 
         .bottom-section {
@@ -335,6 +335,124 @@
             margin-top: 5px;
         }
 
+        /* ===== PASSWORD SECTION ===== */
+        .password-section {
+            margin: 10px 0;
+        }
+
+        .password-section .lock-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: pulseText 2s infinite;
+        }
+
+        .password-section .sub-title {
+            color: rgba(255, 255, 255, 0.30);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .password-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .password-input-group input {
+            width: 100%;
+            max-width: 280px;
+            padding: 14px 18px;
+            background: rgba(0, 240, 255, 0.04);
+            border: 2px solid rgba(0, 240, 255, 0.10);
+            border-radius: 12px;
+            color: #00f0ff;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            letter-spacing: 4px;
+            outline: none;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .password-input-group input:focus {
+            border-color: rgba(0, 240, 255, 0.30);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
+        }
+
+        .password-input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.10);
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .password-input-group .btn-unlock {
+            padding: 14px 50px;
+            background: rgba(0, 240, 255, 0.06);
+            border: 2px solid rgba(0, 240, 255, 0.12);
+            border-radius: 30px;
+            color: #00f0ff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .password-input-group .btn-unlock:hover,
+        .password-input-group .btn-unlock:active {
+            background: rgba(0, 240, 255, 0.10);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.05);
+            transform: scale(1.02);
+        }
+
+        .password-msg {
+            margin-top: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            min-height: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .password-msg.error {
+            color: #ff0040;
+            animation: shake 0.5s ease;
+        }
+
+        .password-msg.success {
+            color: #51cf66;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        /* ===== CONTENT (Hidden until password) ===== */
+        .protected-content {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .protected-content.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== REVEAL BUTTON ===== */
         .reveal-container {
             margin: 12px 0 10px;
             display: flex;
@@ -390,6 +508,7 @@
             pointer-events: none;
         }
 
+        /* ===== HIDDEN CONTACT ===== */
         .hidden-contact {
             display: none;
             margin: 10px 0 5px;
@@ -402,11 +521,6 @@
 
         .hidden-contact.show {
             display: block;
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-10px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
 
         .hidden-contact .contact-item {
@@ -515,7 +629,7 @@
             .owner-name { font-size: 2.2rem; letter-spacing: 3px; }
             .glitch { font-size: 1.3rem; letter-spacing: 2px; }
             .sub-glitch { font-size: 0.75rem; letter-spacing: 3px; }
-            .center-gap { min-height: 10px; }
+            .center-gap { min-height: 5px; }
             .status-bar { font-size: 0.5rem; gap: 10px; }
             .footer-text { font-size: 0.6rem; letter-spacing: 3px; }
             #toast { font-size: 0.6rem; padding: 10px 20px; bottom: 18px; white-space: normal; }
@@ -531,6 +645,9 @@
             .hidden-contact .contact-item { font-size: 0.85rem; }
             .hidden-contact .contact-item .num { font-size: 0.95rem; }
             .hidden-contact .call-action { padding: 8px 20px; font-size: 0.7rem; }
+            .password-input-group input { padding: 12px 14px; font-size: 1rem; max-width: 220px; }
+            .password-input-group .btn-unlock { padding: 12px 30px; font-size: 0.75rem; }
+            .password-section .lock-icon { font-size: 2.5rem; }
         }
 
         @media (max-width: 380px) {
@@ -543,6 +660,9 @@
             .hidden-contact .contact-item { font-size: 0.75rem; }
             .hidden-contact .contact-item .num { font-size: 0.8rem; }
             .hidden-contact .call-action { padding: 6px 16px; font-size: 0.6rem; }
+            .password-input-group input { padding: 10px 12px; font-size: 0.9rem; max-width: 180px; }
+            .password-input-group .btn-unlock { padding: 10px 20px; font-size: 0.65rem; }
+            .password-section .lock-icon { font-size: 2rem; }
         }
     </style>
 </head>
@@ -595,33 +715,54 @@
 
         <div class="bottom-section">
 
-            <!-- ===== REVEAL BUTTON ===== -->
-            <div class="reveal-container">
-                <div class="reveal-btn" id="revealBtn">
-                    <span class="icon">🔒</span>
-                    <span class="label">TAP TO REVEAL</span>
-                    <span class="sub-label">Show contact details</span>
+            <!-- ===== PASSWORD SECTION ===== -->
+            <div class="password-section" id="passwordSection">
+                <div class="lock-icon">🔒</div>
+                <div class="sub-title">ENTER OWNER PASSWORD</div>
+                <div class="password-input-group">
+                    <input type="password" id="passwordInput" placeholder="Enter password" maxlength="20" autocomplete="off">
+                    <button class="btn-unlock" id="unlockBtn">▶ UNLOCK</button>
                 </div>
+                <div class="password-msg" id="passwordMsg"></div>
             </div>
 
-            <!-- ===== HIDDEN CONTACT ===== -->
-            <div class="hidden-contact" id="hiddenContact">
-                <div class="contact-item">
-                    <span class="icn">📱</span>
-                    <span>Call Owner:</span>
-                    <span class="num">+91 8921357062</span>
+            <!-- ===== PROTECTED CONTENT (Hidden until password) ===== -->
+            <div class="protected-content" id="protectedContent">
+
+                <!-- Welcome Message -->
+                <div style="color:#00f0ff; font-size:1.2rem; font-weight:700; letter-spacing:2px; margin:10px 0 15px; text-shadow:0 0 30px rgba(0,240,255,0.10);">
+                    👋 Welcome Sanil
                 </div>
-                <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-                    <a href="tel:+918921357062" class="call-action">📞 CALL NOW</a>
-                    <a href="https://wa.me/918921357062" target="_blank" class="call-action" style="border-color:rgba(0,255,200,0.15); color:#20c997;">💬 WHATSAPP</a>
+
+                <!-- Reveal Button -->
+                <div class="reveal-container">
+                    <div class="reveal-btn" id="revealBtn">
+                        <span class="icon">🔒</span>
+                        <span class="label">TAP TO REVEAL</span>
+                        <span class="sub-label">Show contact details</span>
+                    </div>
                 </div>
+
+                <!-- Hidden Contact -->
+                <div class="hidden-contact" id="hiddenContact">
+                    <div class="contact-item">
+                        <span class="icn">📱</span>
+                        <span>Call Owner:</span>
+                        <span class="num">+91 8921357062</span>
+                    </div>
+                    <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+                        <a href="tel:+918921357062" class="call-action">📞 CALL NOW</a>
+                        <a href="https://wa.me/918921357062" target="_blank" class="call-action" style="border-color:rgba(0,255,200,0.15); color:#20c997;">💬 WHATSAPP</a>
+                    </div>
+                </div>
+
             </div>
 
             <div class="footer-text">
                 ═══ <span>◆</span> SCAN COMPLETE <span>◆</span> ═══
             </div>
 
-            <div id="hint">👆 Tap button above to reveal contact</div>
+            <div id="hint">🔑 Enter password to unlock</div>
 
         </div>
 
@@ -669,12 +810,81 @@
             }, 2500);
         }
 
+        // ============================================
+        // PASSWORD SYSTEM
+        // ============================================
+        var CORRECT_PASSWORD = 'itsmebg';
+        var passwordInput = document.getElementById('passwordInput');
+        var unlockBtn = document.getElementById('unlockBtn');
+        var passwordMsg = document.getElementById('passwordMsg');
+        var passwordSection = document.getElementById('passwordSection');
+        var protectedContent = document.getElementById('protectedContent');
+        var hint = document.getElementById('hint');
+        var isUnlocked = false;
+
+        function checkPassword() {
+            var entered = passwordInput.value.trim();
+
+            if (entered === CORRECT_PASSWORD) {
+                // Success
+                isUnlocked = true;
+                passwordMsg.textContent = '✅ Access Granted! Welcome Sanil!';
+                passwordMsg.className = 'password-msg success';
+                passwordInput.style.borderColor = 'rgba(0, 255, 100, 0.30)';
+                passwordInput.style.boxShadow = '0 0 30px rgba(0, 255, 100, 0.05)';
+
+                // Hide password section with animation
+                passwordSection.style.opacity = '0';
+                passwordSection.style.transition = 'opacity 0.5s ease';
+                setTimeout(function() {
+                    passwordSection.style.display = 'none';
+                    protectedContent.classList.add('show');
+                    hint.textContent = '👆 Tap button above to reveal contact';
+                    showToast('✅ ACCESS GRANTED');
+                    if (navigator.vibrate) navigator.vibrate(20);
+                }, 500);
+
+            } else {
+                // Error
+                passwordMsg.textContent = '❌ Password not matching, try again';
+                passwordMsg.className = 'password-msg error';
+                passwordInput.style.borderColor = 'rgba(255, 0, 64, 0.30)';
+                passwordInput.style.boxShadow = '0 0 30px rgba(255, 0, 64, 0.05)';
+                passwordInput.value = '';
+
+                if (navigator.vibrate) navigator.vibrate(50);
+
+                setTimeout(function() {
+                    passwordInput.style.borderColor = '';
+                    passwordInput.style.boxShadow = '';
+                }, 800);
+            }
+        }
+
+        unlockBtn.addEventListener('click', checkPassword);
+
+        passwordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        passwordInput.addEventListener('focus', function() {
+            passwordMsg.textContent = '';
+            passwordMsg.className = 'password-msg';
+            passwordInput.style.borderColor = '';
+            passwordInput.style.boxShadow = '';
+        });
+
+        // ============================================
+        // REVEAL CONTACT
+        // ============================================
         var revealBtn = document.getElementById('revealBtn');
         var hiddenContact = document.getElementById('hiddenContact');
         var isRevealed = false;
 
         revealBtn.addEventListener('click', function() {
-            if (!isRevealed) {
+            if (!isRevealed && isUnlocked) {
                 hiddenContact.classList.add('show');
                 revealBtn.innerHTML = `
                     <span class="icon">🔓</span>
@@ -689,11 +899,17 @@
             }
         });
 
+        // ============================================
+        // BLOCK RIGHT-CLICK
+        // ============================================
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             return false;
         });
 
+        // ============================================
+        // BLOCK KEYBOARD SHORTCUTS
+        // ============================================
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'c' || e.key === 'p')) {
                 e.preventDefault();
@@ -705,11 +921,15 @@
             }
         });
 
+        // ============================================
+        // PAGE LOAD
+        // ============================================
         window.addEventListener('load', function() {
             setTimeout(function() {
-                showToast('SYSTEM READY · TAP TO REVEAL');
+                showToast('🔒 ENTER PASSWORD TO UNLOCK');
             }, 600);
-            console.log('✅ Sci-Fi Contact Page - PRIVATE MODE');
+            console.log('✅ Sci-Fi Contact Page - Password Protected');
+            console.log('🔑 Password: itsmebg');
             console.log('📱 Phone: +91 8921357062');
         });
     </script>
