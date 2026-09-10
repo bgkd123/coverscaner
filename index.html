@@ -22,7 +22,6 @@
             position: relative;
         }
 
-        /* ===== VIDEO - CLEARER ===== */
         #bg-video {
             position: fixed;
             top: 0;
@@ -35,7 +34,6 @@
             pointer-events: none !important;
         }
 
-        /* ===== OVERLAY - LIGHTER ===== */
         .overlay {
             position: fixed;
             top: 0;
@@ -195,7 +193,6 @@
             50% { opacity: 0.8; }
         }
 
-        /* ===== MAIN CONTAINER - TRANSPARENT (No black box) ===== */
         .container {
             position: relative;
             z-index: 10;
@@ -207,12 +204,12 @@
             flex-direction: column;
             min-height: 100vh;
             justify-content: center;
-            background: transparent; /* ← BLACK BOX REMOVED */
+            background: transparent;
             border-radius: 20px;
             margin: 20px;
-            border: none; /* ← Border removed */
-            box-shadow: none; /* ← Shadow removed */
-            backdrop-filter: none; /* ← Blur removed */
+            border: none;
+            box-shadow: none;
+            backdrop-filter: none;
             -webkit-backdrop-filter: none;
         }
 
@@ -349,6 +346,19 @@
             border: 1px solid rgba(0, 240, 255, 0.10);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+
+        /* BLOCKED STATE */
+        .password-section.blocked {
+            border-color: rgba(255, 0, 64, 0.4);
+            box-shadow: 0 0 40px rgba(255, 0, 64, 0.10);
+            animation: blockPulse 1s infinite;
+        }
+
+        @keyframes blockPulse {
+            0%, 100% { box-shadow: 0 0 40px rgba(255, 0, 64, 0.10); }
+            50% { box-shadow: 0 0 60px rgba(255, 0, 64, 0.20); }
         }
 
         .password-section .lock-icon {
@@ -394,6 +404,11 @@
             box-shadow: 0 0 30px rgba(0, 240, 255, 0.10);
         }
 
+        .password-input-group input:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
         .password-input-group input::placeholder {
             color: rgba(255, 255, 255, 0.20);
             letter-spacing: 1px;
@@ -415,11 +430,19 @@
             touch-action: manipulation;
         }
 
-        .password-input-group .btn-unlock:hover,
-        .password-input-group .btn-unlock:active {
+        .password-input-group .btn-unlock:hover:not(:disabled),
+        .password-input-group .btn-unlock:active:not(:disabled) {
             background: rgba(0, 240, 255, 0.18);
             box-shadow: 0 0 40px rgba(0, 240, 255, 0.10);
             transform: scale(1.02);
+        }
+
+        .password-input-group .btn-unlock:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: rgba(255, 0, 64, 0.08);
+            border-color: rgba(255, 0, 64, 0.15);
+            color: rgba(255, 0, 64, 0.6);
         }
 
         .password-msg {
@@ -448,6 +471,17 @@
             40% { transform: translateX(10px); }
             60% { transform: translateX(-5px); }
             80% { transform: translateX(5px); }
+        }
+
+        /* ===== COUNTDOWN ===== */
+        .countdown {
+            color: #ff0040;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-top: 8px;
+            animation: pulseText 1s infinite;
+            text-shadow: 0 0 15px rgba(255, 0, 64, 0.5);
         }
 
         /* ===== PROTECTED CONTENT ===== */
@@ -480,7 +514,6 @@
             text-shadow: 0 0 30px rgba(0, 240, 255, 0.30), 0 2px 8px rgba(0,0,0,0.9);
         }
 
-        /* ===== REVEAL BUTTON ===== */
         .reveal-container {
             margin: 12px 0 10px;
             display: flex;
@@ -536,7 +569,6 @@
             pointer-events: none;
         }
 
-        /* ===== HIDDEN CONTACT ===== */
         .hidden-contact {
             display: none;
             margin: 10px 0 5px;
@@ -731,6 +763,10 @@
 
     <div id="toast">▶ SYSTEM READY</div>
 
+    <!-- ===== AUDIO FILES ===== -->
+    <audio id="passNoAudio" src="passno.wav" preload="auto"></audio>
+    <audio id="passYesAudio" src="passyes.wav" preload="auto"></audio>
+
     <div class="container">
 
         <div class="top-section">
@@ -752,13 +788,14 @@
 
             <!-- ===== PASSWORD SECTION ===== -->
             <div class="password-section" id="passwordSection">
-                <div class="lock-icon">🔒</div>
-                <div class="sub-title">ENTER OWNER PASSWORD</div>
+                <div class="lock-icon" id="lockIcon">🔒</div>
+                <div class="sub-title" id="subTitle">ENTER OWNER PASSWORD</div>
                 <div class="password-input-group">
                     <input type="password" id="passwordInput" placeholder="Enter password" maxlength="20" autocomplete="off">
                     <button class="btn-unlock" id="unlockBtn">▶ UNLOCK</button>
                 </div>
                 <div class="password-msg" id="passwordMsg"></div>
+                <div class="countdown" id="countdown"></div>
             </div>
 
             <!-- ===== PROTECTED CONTENT ===== -->
@@ -843,6 +880,26 @@
         }
 
         // ============================================
+        // AUDIO FILES
+        // ============================================
+        var passNoAudio = document.getElementById('passNoAudio');
+        var passYesAudio = document.getElementById('passYesAudio');
+
+        function playAudio(audioEl) {
+            try {
+                audioEl.currentTime = 0;
+                var playPromise = audioEl.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(err) {
+                        console.log('Audio play failed:', err);
+                    });
+                }
+            } catch(e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+        // ============================================
         // PASSWORD SYSTEM
         // ============================================
         var CORRECT_PASSWORD = 'itsmebg';
@@ -852,17 +909,79 @@
         var passwordSection = document.getElementById('passwordSection');
         var protectedContent = document.getElementById('protectedContent');
         var hint = document.getElementById('hint');
+        var lockIcon = document.getElementById('lockIcon');
+        var subTitle = document.getElementById('subTitle');
+        var countdownEl = document.getElementById('countdown');
         var isUnlocked = false;
+        var isBlocked = false;
+        var blockTimer = null;
+        var countdownTimer = null;
 
+        // ============================================
+        // BLOCK INPUT FOR 5 SECONDS
+        // ============================================
+        function blockInput() {
+            isBlocked = true;
+            var secondsLeft = 5;
+
+            passwordInput.disabled = true;
+            unlockBtn.disabled = true;
+            passwordSection.classList.add('blocked');
+            lockIcon.textContent = '🚫';
+            subTitle.textContent = 'ACCESS DENIED';
+
+            countdownEl.textContent = '⏳ Try again in ' + secondsLeft + 's';
+            countdownEl.style.display = 'block';
+
+            countdownTimer = setInterval(function() {
+                secondsLeft--;
+                if (secondsLeft > 0) {
+                    countdownEl.textContent = '⏳ Try again in ' + secondsLeft + 's';
+                } else {
+                    countdownEl.textContent = '✅ You can try again now';
+                    setTimeout(function() {
+                        countdownEl.style.display = 'none';
+                    }, 800);
+                }
+            }, 1000);
+
+            blockTimer = setTimeout(function() {
+                isBlocked = false;
+                passwordInput.disabled = false;
+                unlockBtn.disabled = false;
+                passwordSection.classList.remove('blocked');
+                lockIcon.textContent = '🔒';
+                subTitle.textContent = 'ENTER OWNER PASSWORD';
+                passwordInput.focus();
+                passwordMsg.textContent = '';
+                passwordMsg.className = 'password-msg';
+                passwordInput.style.borderColor = '';
+                passwordInput.style.boxShadow = '';
+                clearInterval(countdownTimer);
+            }, 5000);
+        }
+
+        // ============================================
+        // CHECK PASSWORD
+        // ============================================
         function checkPassword() {
+            if (isBlocked) return;
+
             var entered = passwordInput.value.trim();
 
             if (entered === CORRECT_PASSWORD) {
+                // ===== CORRECT PASSWORD =====
                 isUnlocked = true;
+
+                // Play YES sound
+                playAudio(passYesAudio);
+
                 passwordMsg.textContent = '✅ Access Granted! Welcome Sanil!';
                 passwordMsg.className = 'password-msg success';
                 passwordInput.style.borderColor = 'rgba(0, 255, 100, 0.50)';
                 passwordInput.style.boxShadow = '0 0 30px rgba(0, 255, 100, 0.15)';
+                lockIcon.textContent = '🔓';
+                subTitle.textContent = 'ACCESS GRANTED';
 
                 passwordSection.style.opacity = '0';
                 passwordSection.style.transition = 'opacity 0.5s ease';
@@ -872,37 +991,41 @@
                     hint.textContent = '👆 Tap button above to reveal contact';
                     showToast('✅ ACCESS GRANTED');
                     if (navigator.vibrate) navigator.vibrate(20);
-                }, 500);
+                }, 800);
 
             } else {
+                // ===== WRONG PASSWORD =====
                 passwordMsg.textContent = '❌ Password not matching, try again';
                 passwordMsg.className = 'password-msg error';
                 passwordInput.style.borderColor = 'rgba(255, 0, 64, 0.50)';
                 passwordInput.style.boxShadow = '0 0 30px rgba(255, 0, 64, 0.15)';
                 passwordInput.value = '';
 
+                // Play NO sound
+                playAudio(passNoAudio);
+
                 if (navigator.vibrate) navigator.vibrate(50);
 
-                setTimeout(function() {
-                    passwordInput.style.borderColor = '';
-                    passwordInput.style.boxShadow = '';
-                }, 800);
+                // Block for 5 seconds
+                blockInput();
             }
         }
 
         unlockBtn.addEventListener('click', checkPassword);
 
         passwordInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !isBlocked) {
                 checkPassword();
             }
         });
 
         passwordInput.addEventListener('focus', function() {
-            passwordMsg.textContent = '';
-            passwordMsg.className = 'password-msg';
-            passwordInput.style.borderColor = '';
-            passwordInput.style.boxShadow = '';
+            if (!isBlocked) {
+                passwordMsg.textContent = '';
+                passwordMsg.className = 'password-msg';
+                passwordInput.style.borderColor = '';
+                passwordInput.style.boxShadow = '';
+            }
         });
 
         // ============================================
@@ -948,9 +1071,10 @@
             setTimeout(function() {
                 showToast('🔒 ENTER PASSWORD TO UNLOCK');
             }, 600);
-            console.log('✅ Sci-Fi Contact Page - TRANSPARENT with Video');
+            console.log('✅ Sci-Fi Contact Page - Audio Enabled');
             console.log('🔑 Password: itsmebg');
-            console.log('📱 Phone: +91 8921357062');
+            console.log('🔊 passno.wav = wrong password');
+            console.log('🔊 passyes.wav = correct password');
         });
     </script>
 
